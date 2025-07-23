@@ -493,7 +493,7 @@ const pages = {
         </div>
       </div>
     </section>
-    <footer class="footer minimal-footer"><p>&copy; 2024 M&M Web Solutions. All rights reserved.</p></footer>
+    <footer class="footer minimal-footer"><p>&copy; 2025 M&M Freelancers. All rights reserved.</p></footer>
   `,
   contact: `
     <section id="contact" class="minimal-contact">
@@ -526,7 +526,7 @@ const pages = {
         <p class="privacy-note">Your message is confidential and will be handled with care.</p>
       </div>
     </section>
-    <footer class="footer minimal-footer"><p>&copy; 2024 M&M Web Solutions. All rights reserved.</p></footer>
+    <footer class="footer minimal-footer"><p>&copy; 2025 M&M Freelancers. All rights reserved.</p></footer>
   `
 };
 
@@ -611,6 +611,30 @@ function updatePackageCardThemes(theme) {
     detailsList.forEach(li => {
       li.style.color = theme === 'dark' ? '#fff' : '#000';
     });
+  });
+}
+
+// --- REWRITE: Feature theme color logic for loop slider (Security First, UI/UX Design, Reliable, Innovative, Supportive) ---
+// Always set text color to black for these slides, regardless of theme
+function updateLoopSliderFeatureColors() {
+  const slider = document.getElementById('loop-slider-inner');
+  if (!slider) return;
+  // Only target the slides with the specific text
+  const blackTextFeatures = [
+    "Security First",
+    "UI/UX Design",
+    "Reliable",
+    "Innovative",
+    "Supportive"
+  ];
+  slider.querySelectorAll('.loop-slide').forEach(slide => {
+    // Check if the slide text matches any of the features
+    for (const feature of blackTextFeatures) {
+      if (slide.textContent.trim().endsWith(feature)) {
+        slide.style.color = "#000";
+        break;
+      }
+    }
   });
 }
 
@@ -700,14 +724,12 @@ function renderModernPackages() {
   });
 }
 
+// --- REWRITE: Feature theme color logic for home features (ul.home-features) ---
+// Always set text color to black for these features, regardless of theme
 function updateFeatureTheme(theme) {
   const features = document.querySelectorAll('.home-features .feature-icon, .home-features .feature-label');
   features.forEach(el => {
-    if (theme === 'dark') {
-      el.style.color = '#7ecbff';
-    } else {
-      el.style.color = '#0056a6';
-    }
+    el.style.color = '#000';
   });
 }
 
@@ -777,7 +799,7 @@ function animateHomeFeatures() {
       li.style.transform = 'scale(1.06)';
       if (window.gsap) {
         gsap.to(icon, { scale: 1.28, rotate: 10, duration: 0.28, ease: 'power2.out' });
-        gsap.to(label, { scale: 1.06, color: html.getAttribute('data-theme') === 'dark' ? "#7ecbff" : "#1e7ed6", duration: 0.22, ease: "power2.out" });
+        gsap.to(label, { scale: 1.06, color: "#000", duration: 0.22, ease: "power2.out" });
       }
     });
     li.addEventListener('mouseleave', () => {
@@ -786,7 +808,7 @@ function animateHomeFeatures() {
       li.style.transform = 'none';
       if (window.gsap) {
         gsap.to(icon, { scale: 1, rotate: 0, duration: 0.3, ease: 'power2.out' });
-        gsap.to(label, { scale: 1, color: "", duration: 0.22, ease: "power2.out" });
+        gsap.to(label, { scale: 1, color: "#000", duration: 0.22, ease: "power2.out" });
       }
     });
     li.addEventListener('focus', () => {
@@ -800,7 +822,7 @@ function animateHomeFeatures() {
       li.style.transform = 'scale(1.06)';
       if (window.gsap) {
         gsap.to(icon, { scale: 1.28, rotate: 10, duration: 0.28, ease: 'power2.out' });
-        gsap.to(label, { scale: 1.06, color: html.getAttribute('data-theme') === 'dark' ? "#7ecbff" : "#1e7ed6", duration: 0.22, ease: "power2.out" });
+        gsap.to(label, { scale: 1.06, color: "#000", duration: 0.22, ease: "power2.out" });
       }
     });
     li.addEventListener('blur', () => {
@@ -809,7 +831,7 @@ function animateHomeFeatures() {
       li.style.transform = 'none';
       if (window.gsap) {
         gsap.to(icon, { scale: 1, rotate: 0, duration: 0.3, ease: 'power2.out' });
-        gsap.to(label, { scale: 1, color: "", duration: 0.22, ease: "power2.out" });
+        gsap.to(label, { scale: 1, color: "#000", duration: 0.22, ease: "power2.out" });
       }
     });
   });
@@ -825,16 +847,16 @@ function renderLoopSlider() {
     span.className = 'loop-slide modern-slide';
     span.textContent = `${slide.icon} ${slide.text}`;
     span.style.opacity = 0;
+    // Always set color to black for these slides
+    span.style.color = "#000";
     const theme = html.getAttribute('data-theme') || getPreferredTheme();
     if (theme === 'dark') {
       span.style.background = 'rgba(30,126,214,0.13)';
-      span.style.color = '#eaf1fa';
       span.style.borderRadius = '0.7em';
       span.style.padding = '0.5em 1.2em';
       span.style.boxShadow = '0 2px 8px 0 rgba(30,126,214,0.13)';
     } else {
       span.style.background = 'rgba(30,126,214,0.08)';
-      span.style.color = '#0056a6';
       span.style.borderRadius = '0.7em';
       span.style.padding = '0.5em 1.2em';
       span.style.boxShadow = '0 2px 8px 0 rgba(30,126,214,0.07)';
@@ -852,6 +874,8 @@ function renderLoopSlider() {
       );
     });
   }
+  // Ensure color is black for the required slides
+  updateLoopSliderFeatureColors();
 }
 
 function loadPage(page) {
@@ -880,6 +904,7 @@ function loadPage(page) {
       setTimeout(() => {
         updatePackageCardThemes(html.getAttribute('data-theme') || getPreferredTheme());
         updateFeatureTheme(html.getAttribute('data-theme') || getPreferredTheme());
+        updateLoopSliderFeatureColors();
       }, 0);
     }
     // On mobile, ensure all mobile elements are themed
@@ -1005,8 +1030,10 @@ if (fab) {
 window.addEventListener('storage', (e) => {
   if (e.key === THEME_KEY) {
     setTheme(e.newValue, false);
+    updateLoopSliderFeatureColors();
   }
 });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
   setTheme(e.matches ? 'dark' : 'light', false);
+  updateLoopSliderFeatureColors();
 });

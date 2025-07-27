@@ -2,20 +2,74 @@
 // Now with full dark/light mode responsiveness for mobile
 
 // --- Mobile Navigation Toggle ---
+// Place theme toggle icon centered under navigation for mobile
 (function setupMobileNav() {
   if (!document.querySelector('.mobile-nav-toggle')) {
     const header = document.querySelector('.header');
     const nav = document.querySelector('.nav');
+    const themeToggle = document.querySelector('.theme-toggle');
     const btn = document.createElement('button');
     btn.className = 'mobile-nav-toggle';
     btn.setAttribute('aria-label', 'Open navigation menu');
     btn.innerHTML = '<span></span><span></span><span></span>';
     header.insertBefore(btn, nav);
 
+    // --- THEME TOGGLE CENTERED UNDER NAVIGATION LOGIC ---
+    function placeThemeToggleCenteredMobile() {
+      if (!themeToggle) return;
+      // Only center on mobile (max-width: 768px)
+      if (window.innerWidth <= 768) {
+        // Create a wrapper if not present
+        let wrapper = document.querySelector('.theme-toggle-mobile-center');
+        if (!wrapper) {
+          wrapper = document.createElement('div');
+          wrapper.className = 'theme-toggle-mobile-center';
+          wrapper.style.display = 'flex';
+          wrapper.style.justifyContent = 'center';
+          wrapper.style.marginTop = '1rem';
+          wrapper.style.width = '100%';
+        }
+        // Move themeToggle into wrapper
+        if (themeToggle.parentElement !== wrapper) {
+          wrapper.appendChild(themeToggle);
+        }
+        // Insert wrapper after nav if not already there
+        if (nav.nextSibling !== wrapper) {
+          if (nav.nextSibling) {
+            header.insertBefore(wrapper, nav.nextSibling);
+          } else {
+            header.appendChild(wrapper);
+          }
+        }
+        themeToggle.classList.add('theme-toggle-centered-mobile');
+      } else {
+        // Remove wrapper and place themeToggle after nav in header
+        let wrapper = document.querySelector('.theme-toggle-mobile-center');
+        if (wrapper && wrapper.contains(themeToggle)) {
+          wrapper.removeChild(themeToggle);
+          if (nav.nextSibling) {
+            header.insertBefore(themeToggle, nav.nextSibling);
+          } else {
+            header.appendChild(themeToggle);
+          }
+          wrapper.remove();
+        } else if (themeToggle.parentElement !== header || themeToggle.previousElementSibling !== nav) {
+          if (nav.nextSibling) {
+            header.insertBefore(themeToggle, nav.nextSibling);
+          } else {
+            header.appendChild(themeToggle);
+          }
+        }
+        themeToggle.classList.remove('theme-toggle-centered-mobile');
+      }
+    }
+
     btn.addEventListener('click', () => {
       nav.classList.toggle('nav-open');
       btn.classList.toggle('open');
       document.body.classList.toggle('nav-overlay');
+      // Always keep theme toggle centered under nav on mobile
+      placeThemeToggleCenteredMobile();
     });
 
     nav.addEventListener('click', e => {
@@ -23,7 +77,19 @@
         nav.classList.remove('nav-open');
         btn.classList.remove('open');
         document.body.classList.remove('nav-overlay');
+        // Always keep theme toggle centered under nav on mobile
+        placeThemeToggleCenteredMobile();
       }
+    });
+
+    // On resize, always keep theme toggle centered under nav on mobile
+    window.addEventListener('resize', () => {
+      placeThemeToggleCenteredMobile();
+    });
+
+    // On initial load, ensure correct placement
+    window.addEventListener('DOMContentLoaded', () => {
+      placeThemeToggleCenteredMobile();
     });
   }
 })();
@@ -165,6 +231,28 @@
         }
         [data-theme="dark"] .header {
           background: var(--header-bg, #181f2a);
+        }
+        /* Center the theme toggle under nav on mobile */
+        .theme-toggle-mobile-center {
+          display: flex !important;
+          justify-content: center !important;
+          margin-top: 1rem !important;
+          width: 100% !important;
+        }
+        .theme-toggle-centered-mobile {
+          display: flex !important;
+          margin: 0 auto !important;
+          left: 0 !important;
+          right: 0 !important;
+          position: static !important;
+          transform: none !important;
+        }
+        .header > .theme-toggle {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+        .nav .theme-toggle {
+          margin-top: 0 !important;
         }
       }
       /* FAB touch feedback */
@@ -910,6 +998,55 @@ function loadPage(page) {
     // On mobile, ensure all mobile elements are themed
     if (window.innerWidth < 700) {
       setTheme(html.getAttribute('data-theme') || getPreferredTheme(), false);
+    }
+    // After page load, always keep theme toggle centered under nav on mobile
+    const nav = document.querySelector('.nav');
+    const header = document.querySelector('.header');
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (header && nav && themeToggle) {
+      // Center the theme toggle under nav on mobile, else beside nav
+      if (window.innerWidth <= 768) {
+        // Create a wrapper if not present
+        let wrapper = document.querySelector('.theme-toggle-mobile-center');
+        if (!wrapper) {
+          wrapper = document.createElement('div');
+          wrapper.className = 'theme-toggle-mobile-center';
+          wrapper.style.display = 'flex';
+          wrapper.style.justifyContent = 'center';
+          wrapper.style.marginTop = '1rem';
+          wrapper.style.width = '100%';
+        }
+        if (themeToggle.parentElement !== wrapper) {
+          wrapper.appendChild(themeToggle);
+        }
+        if (nav.nextSibling !== wrapper) {
+          if (nav.nextSibling) {
+            header.insertBefore(wrapper, nav.nextSibling);
+          } else {
+            header.appendChild(wrapper);
+          }
+        }
+        themeToggle.classList.add('theme-toggle-centered-mobile');
+      } else {
+        // Remove wrapper and place themeToggle after nav in header
+        let wrapper = document.querySelector('.theme-toggle-mobile-center');
+        if (wrapper && wrapper.contains(themeToggle)) {
+          wrapper.removeChild(themeToggle);
+          if (nav.nextSibling) {
+            header.insertBefore(themeToggle, nav.nextSibling);
+          } else {
+            header.appendChild(themeToggle);
+          }
+          wrapper.remove();
+        } else if (themeToggle.parentElement !== header || themeToggle.previousElementSibling !== nav) {
+          if (nav.nextSibling) {
+            header.insertBefore(themeToggle, nav.nextSibling);
+          } else {
+            header.appendChild(themeToggle);
+          }
+        }
+        themeToggle.classList.remove('theme-toggle-centered-mobile');
+      }
     }
   }, 700);
 }
